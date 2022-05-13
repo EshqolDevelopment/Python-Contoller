@@ -4,6 +4,8 @@ import { QrReader } from 'react-qr-reader';
 import qr from './qr.png';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {db, get, ref} from "./firebase";
+import {sha256} from "js-sha256";
 
 
 export default function Login() {
@@ -21,22 +23,29 @@ export default function Login() {
     }, [data])
 
 
-    function connect(){
-        console.log(text)
-        if (validCode(text)) {
-            localStorage.setItem("code", text)
-            window.location = "http://localhost:3000/home";
+    async function connect(){
+
+        const hash = sha256.create();
+        hash.update(text);
+
+        if (text.length === 16){
+            await get(ref(db, "Root/" + hash.hex())).then((e) => {
+                console.log(e.val())
+                if (e.val() !== null){
+                    localStorage.setItem("code", text)
+                    window.location = window.location.origin + "/home";
+                }
+                else{
+                    toast.error("The code is invalid")
+                }
+            })
         }
         else{
-            toast.info("The code is invalid")
+            toast.error("The code is invalid")
         }
-
     }
 
 
-    function validCode(code){
-        return true
-    }
 
     function close(){
         setCloseScanner(<div/>)
@@ -75,7 +84,7 @@ export default function Login() {
             <div className="bg bg3"/>
             <div className="content">
                 <h2>Scan the computer qr code to connect</h2>
-                <img src={qr} className={"qr"} onClick={startScanning}/>
+                <img src={qr} className={"qr"} onClick={startScanning} alt={"QR Scanner"}/>
                 <h2>Or enter your computer quick connect code</h2>
                 <input id={"input"} className={"input"} type={"text"} placeholder={"Connect Code"} value={text} onChange={e => setText(e.target.value)}/>
 
