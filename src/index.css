@@ -138,6 +138,14 @@
 
 }
 
+.add-icon{
+    position: absolute;
+    width: 30px;
+    left: 34.5vw;
+    top: 32.7vh;
+    cursor: pointer;
+}
+
 .scanner{
     position: absolute;
     width: 35%;
@@ -279,4 +287,29 @@ body {
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+
+.codes-div{
+    display: flex;
+    background: #5a667f;
+    width: 45vw;
+    height: 5vh;
+    position: absolute;
+    left: 27.5vw;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 40px;
+    top: 78%;
+    overflow: scroll;
+}
+
+.one-code{
+    background: black;
+    border-radius: 10px;
+    padding: 0 2px;
+    margin-left: 15px;
+    height: 70%;
+    display: flex;
+    align-items: center;
 }
