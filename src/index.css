@@ -302,14 +302,22 @@ code {
     border-radius: 40px;
     top: 78%;
     overflow: scroll;
+    padding: 10px;
 }
 
 .one-code{
     background: black;
     border-radius: 10px;
-    padding: 0 2px;
+    padding: 7px 12px;
     margin-left: 15px;
     height: 70%;
     display: flex;
     align-items: center;
+}
+
+.comp-name{
+    position: absolute;
+    padding: 10px;
+    left: 29%;
+    top: 57.1%;
 }

@@ -1,5 +1,5 @@
 import './App.css';
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import { QrReader } from 'react-qr-reader';
 import qr from './qr.png';
 import {toast, ToastContainer} from 'react-toastify';
@@ -20,6 +20,8 @@ export default function Login() {
     const [codes, setCodes] = useState([])
     const [codesNumbers, setCodesNumbers] = useState([])
     const [remove, setRemove] = useState("")
+    const [mapName, setMapName] = useState( (localStorage.getItem("names") || "").split("*"))
+
 
 
     useEffect(() => {
@@ -39,11 +41,43 @@ export default function Login() {
     }, [remove])
 
 
+    useEffect(() => {
+        const oldCodes = localStorage.getItem("code")
+
+        if (oldCodes != null){
+            const allCodesList = oldCodes.split("@")
+            for (let c of allCodesList){
+                addCode1(c)
+            }
+        }
+
+    }, [])
+
+
+
+    function addCode1(text1){
+        const temp = codes.slice()
+        temp.push(<div id={text1} className={"one-code"}>
+            <p style={{color: "white", }}>{shortenText(text1)}</p>
+            <img style={{width: "25px", height: "25px", cursor: "pointer"}} src={require("./delete.png")} key={Math.random()} onClick={() => {setRemove(text1)}}/>
+        </div> )
+        setCodes(temp)
+
+        let temp1 = codesNumbers.slice()
+        temp1.push(text1)
+        setCodesNumbers(temp1)
+        setText("")
+
+    }
+
+
+
 
     async function connect(){
         if (codesNumbers.length > 0){
-            localStorage.setItem("code", codesNumbers.join("@"))
-            console.log(codesNumbers.join("@"))
+            localStorage.setItem("code", codesNumbers.join("@"));
+            localStorage.setItem("names", mapName.join("*"));
+
             window.location = window.location.origin + "/home";
         }
     }
@@ -81,7 +115,14 @@ export default function Login() {
     }
 
     function shortenText(text1){
-        return "..." + text1.slice(text1.length-5)
+        const map = {}
+        for (let nm of mapName){
+            const [code, name] = nm.split("@")
+            map[code] = name
+        }
+
+        return map[text1]
+        // return "..." + text1.slice(text1.length-5)
     }
 
     async function addCode() {
@@ -90,30 +131,26 @@ export default function Login() {
         hash.update(text);
 
         if (text.length === 16){
+
+            if (!document.getElementById("comp-name").value) return
+
             await get(ref(db, "Root/" + hash.hex())).then((e) => {
                 if (e.val() !== null){
+                    const compName = document.getElementById("comp-name").value
+                    document.getElementById("comp-name").value = ""
+                    const temp = mapName
+                    temp.push(`${text}@${compName}`)
+                    setMapName(temp)
 
-                    let temp = codes.slice()
-                    temp.push(<div id={text} className={"one-code"}>
-                        <p style={{color: "white", }}>{shortenText(text)}</p>
-                        <img style={{width: "20px", height: "20px", cursor: "pointer"}} src={require("./delete.png")} onClick={() => {setRemove(text)}}/>
-                    </div> )
-                    setCodes(temp)
-
-                    let temp1 = codesNumbers.slice()
-                    temp1.push(text)
-                    setCodesNumbers(temp1)
-                    setText("")
-
+                   addCode1(text)
                 }
-                else{
-                    toast.error("The code is invalid")
-                }
+
+                else toast.error("The code is invalid")
+
             })
         }
-        else{
-            toast.error("The code is invalid")
-        }
+        else toast.error("The code is invalid")
+
 
     }
 
@@ -168,6 +205,7 @@ export default function Login() {
                 {closeScanner}
             </div>
 
+            <input className={"comp-name"} id={"comp-name"} placeholder={"Computer nickname"}/>
 
             <div className={'toast'}>
                 <ToastContainer

@@ -1,5 +1,5 @@
 import './Home.css';
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {sha256} from "js-sha256";
 import {write, ref, db, onValue} from './firebase'
 import AceEditor from "react-ace";
@@ -14,11 +14,20 @@ import 'brace/theme/dracula';
 import "ace-builds/src-noconflict/ext-language_tools";
 
 
+const run = []
 const CryptoJS = require("crypto-js");
 
 export default function Home() {
 
-    const codes = localStorage.getItem("code").split("@")
+    const codes = localStorage.getItem("code")
+    const names = localStorage.getItem("names")
+
+    const map = {}
+    for (let nm of names.split("*")){
+        const [code, name] = nm.split("@")
+        map[code] = name
+    }
+
 
     const [value, setValue] = useState("")
     const salt = "sigma"
@@ -26,7 +35,7 @@ export default function Home() {
     const [theme, setTheme] = useState("xcode")
     const [back] = useState(`rgba(${rnd(40)}, ${rnd(80)}, ${rnd(190)}, 1)`)
     const [htmlSelect, setHtmlSelect] = useState([])
-    const [currentCode, setCurrentCode] = useState("")
+    const currentCode = useRef("")
     const [sha, setSha] = useState(null)
 
     function rnd(a) {
@@ -34,14 +43,21 @@ export default function Home() {
     }
 
     useEffect(() => {
-        const hash = sha256.create();
-        hash.update(currentCode);
-        setSha(hash.hex());
+        console.log(currentCode)
+        if (currentCode.current){
+            const hash = sha256.create();
+            hash.update(currentCode.current);
+            setSha(hash.hex());
+        }
+
     }, [currentCode])
 
 
     function downloadFile(data, name){
-        save(name, data)
+        if (!run.includes(name)){
+            run.push(name)
+            save(name, data)
+        }
     }
 
 
@@ -62,23 +78,34 @@ export default function Home() {
 
 
     useEffect(() => {
+
+        const val = localStorage.getItem("python")
+        if (val)
+            setValue(localStorage.getItem("python"))
+        else setValue("\n\nprint('Hello World!')")
+
         localStorage.setItem("isRunning", "true")
         if (codes == null){
             window.location = window.location.origin + "/connect";
         }
         else{
             const temp = []
-            for (let c of codes){
-                temp.push(<option value={c}>{c}</option>)
+            for (let c of codes.split("@")){
+                if (map[c]){
+                    console.log(c)
+                    temp.push(<option value={c}>{map[c]}</option>)
+                }
             }
             setHtmlSelect(temp)
         }
+
     }, [])
 
 
     useEffect(() => {
         readOutput()
     })
+
 
     function goConnect(){
         window.location = window.location.origin + "/connect";
@@ -91,6 +118,16 @@ export default function Home() {
         const iv = CryptoJS.enc.Utf8.parse('BBBBBBBBBBBBBBBB')
         return CryptoJS.AES.encrypt(message, key, { iv: iv, mode: CryptoJS.mode.CBC}).toString();
     }
+
+
+    function decrypt(encrypted, key){
+        const iv = CryptoJS.enc.Utf8.parse('BBBBBBBBBBBBBBBB');
+        key = CryptoJS.enc.Utf8.parse(key);
+        let decrypted =  CryptoJS.AES.decrypt(encrypted, key, { iv: iv, mode: CryptoJS.mode.CBC});
+        decrypted = decrypted.toString(CryptoJS.enc.Utf8);
+        return decrypted
+    }
+
 
 
     function changeTheme(){
@@ -108,7 +145,7 @@ export default function Home() {
                 console.log(localStorage.getItem("isRunning"))
             }, 2000)
         }
-        const encryptedText = encrypt(value, currentCode)
+        const encryptedText = encrypt(value, currentCode.current)
 
         write(sha, encryptedText)
     }
@@ -129,9 +166,22 @@ export default function Home() {
         const out = ref(db, "Root/" + sha + "-output")
         let temp1 = ""
         onValue(out, (e) => {
-            const output = e.val()
+            let output = e.val()
             let string = output
             if(output === null) return
+
+            output = decrypt(output, currentCode.current)
+
+            if (output.slice(output.length-5, output.length) === 'sigma') {
+                console.log(output.slice(0, output.length - 6))
+                output = output.slice(0, output.length - 6)
+                string = output
+            }
+            else{
+                console.log(output.slice(output.length-5))
+                return;
+            }
+
 
             if (output.includes("True")) localStorage.setItem("isRunning", "True")
 
@@ -150,23 +200,26 @@ export default function Home() {
                     }
 
                 }
-
+                setOutput("Download was successful!")
             }
 
-            setOutput(string.replaceAll("@@@", ""))
+            else setOutput(string.replaceAll("@@@", ""))
 
         })
     }
 
-    function terminate(){
-        const encryptedText = encrypt("exit()", currentCode)
-        write(sha, encryptedText)
-    }
-
 
     function onSelectCode(e){
-        setCurrentCode(e.target.value)
+        localStorage.setItem("default_comp", e.target.value)
+        currentCode.current = (e.target.value)
     }
+
+    function getItem(key, def) {
+        const curr  = localStorage.getItem(key)
+        currentCode.current = (curr || def)
+        return curr || def
+    }
+
 
     return (
         <div className={"App"}>
@@ -191,28 +244,27 @@ export default function Home() {
 
             <div className={"content1"}>
                 <div className={"send"}>
-                    <button className="button-27" onClick={send}>Send commands</button>
-                    <button className={"button-27"} id={"a"} onClick={terminate}>Terminate pc program</button>
+                    <button className="button-27" id={"send-btn"} onClick={send}>Send commands</button>
 
-                    <div className={"themes"}>
-                        <label className="select" htmlFor="slct"><select defaultValue={"xcode"} onChange={changeTheme} id="slct" required="required">
-                            <option value disabled="disabled" >Select option</option>
-                            <option value="xcode">xcode</option>
-                            <option value="chrome">chrome</option>
-                            <option value="github">github</option>
-                            <option value="tomorrow">tomorrow</option>
-                            <option value="terminal">terminal</option>
-                            <option value="dracula">dracula</option>
-                            <option value="monokai">monokai</option>
-                        </select><svg>
-                            <use xlinkHref="#select-arrow-down" />
-                        </svg></label>{/* SVG Sprites*/}<svg className="sprites">
-                        <symbol id="select-arrow-down" viewBox="0 0 10 6">
-                            <polyline points="1 1 5 5 9 1" />
-                        </symbol>
-                    </svg>
-                    </div>
+                </div>
 
+                <div className={"themes"}>
+                    <label className="select" htmlFor="slct"><select defaultValue={"xcode"} onChange={changeTheme} id="slct" required="required">
+                        <option value disabled="disabled" >Select option</option>
+                        <option value="xcode">xcode</option>
+                        <option value="chrome">chrome</option>
+                        <option value="github">github</option>
+                        <option value="tomorrow">tomorrow</option>
+                        <option value="terminal">terminal</option>
+                        <option value="dracula">dracula</option>
+                        <option value="monokai">monokai</option>
+                    </select><svg>
+                        <use xlinkHref="#select-arrow-down" />
+                    </svg></label>{/* SVG Sprites*/}<svg className="sprites">
+                    <symbol id="select-arrow-down" viewBox="0 0 10 6">
+                        <polyline points="1 1 5 5 9 1" />
+                    </symbol>
+                </svg>
                 </div>
 
                 <h3 className={"output"}>Output: <br/><br/>{output}</h3>
@@ -224,6 +276,7 @@ export default function Home() {
                     theme={theme}
                     className={'editor'}
                     onChange={(x) => {
+                        localStorage.setItem("python", x)
                         setValue(x)
                     }}
                     fontSize={17}
@@ -255,16 +308,13 @@ export default function Home() {
 
                 <button className={'button-28'} id={"go-connect"} onClick={goConnect}>Connect Page</button>
 
-                <select className="codes-list" onChange={onSelectCode}>
-                    <option  disabled selected>Select Codes</option>
+                <select className="codes-list" onChange={onSelectCode} value={getItem("default_comp")}>
+                    <option  disabled selected>Select Computer</option>
                     {htmlSelect}
                 </select>
 
+
             </div>
-
-
-
-
         </div>
     )
 }

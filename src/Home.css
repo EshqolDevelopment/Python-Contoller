@@ -320,19 +320,21 @@ body{
 }
 
 .themes{
-    position: relative;
-    top:  2vh;
-    width: 86%;
-    left: 7%;
+    position: absolute;
+    top:  73.5vh;
+    left: 59.7vw;
+    width: 120px;
+    z-index: 101;
 
 }
+
 
 .output {
     text-align: left;
     color: white;
     position: absolute;
     left: 73%;
-    top: 50%;
+    top: 40%;
     width: 20%;
     white-space: pre-wrap;
     word-break: break-all;
@@ -475,4 +477,7 @@ body{
 
 
 
-
+#send-btn{
+    position: relative;
+    top: 10vh;
+}
