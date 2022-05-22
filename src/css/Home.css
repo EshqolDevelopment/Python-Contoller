@@ -1,0 +1,180 @@
+@import url('https://fonts.googleapis.com/css?family=Exo:400,700');
+
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+
+.right, .center, .left {
+    position: absolute;
+    height: 88vh;
+    bottom: 0;
+}
+
+
+.right {
+    width: 30vw;
+    right: 0;
+}
+
+.center {
+    width: 40vw;
+    left: 30vw;
+}
+
+.left {
+    width: 30vw;
+    left: 0;
+}
+
+.context {
+    width: 100%;
+    position: absolute;
+    top:50vh;
+}
+
+.context h1 {
+    text-align: center;
+    color: #fff;
+    font-size: 50px;
+}
+
+.area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height:100vh;
+    overflow: hidden;
+}
+
+.editor {
+    position: absolute;
+    top: 10%;
+    left: 2%;
+    width: 96%;
+    height: 80%;
+}
+
+.send {
+    position: absolute;
+    left: 25%;
+    top: 20%;
+    width: 50%;
+    height: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.output {
+    text-align: left;
+    color: white;
+    position: absolute;
+    left: 25%;
+    top: 45%;
+    width: 50%;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.decription {
+    position: absolute;
+    top: 10%;
+    left: 20%;
+}
+
+#a {
+    background-color: red;
+    border: 2px solid darkred;
+}
+
+.sprites {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.description {
+    position: absolute;
+    color: white;
+    width: 86%;
+    left: 7%;
+    top: 8%;
+}
+
+.install {
+    position: absolute;
+    left: 39%;
+    top: 60%;
+    width: 22%;
+    cursor: pointer;
+}
+
+.title1 {
+    position: absolute;
+    top: 4%;
+    color: white;
+    width: 100%;
+    text-align: center;
+    z-index: 99;
+}
+
+.content1 {
+    position: absolute;
+    height: 94vh;
+    width: 100%;
+    left: 0;
+    top: 6vh;
+}
+
+.themes {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+#docs-button {
+    position: absolute;
+    left: 35%;
+    top: 70%;
+    height: 6%;
+    width: 30%;
+}
+
+#go-connect {
+    position: absolute;
+    left: 3vw;
+    top: 3vh;
+    width: 8vw;
+}
+
+.codes-home {
+    width: 35vw;
+    left: 31.8vw;
+    top: 83vh;
+}
+
+.codes-list {
+    position: absolute;
+    padding: 10px;
+    top: 19%;
+    left: 38%;
+    border-radius: 10px;
+}
+
+.connected {
+    position: absolute;
+    top: 8%;
+    width: 100%;
+    text-align: center;
+}
+
+#send-btn {
+    position: relative;
+    top: 10vh;
+}

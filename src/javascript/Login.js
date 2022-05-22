@@ -1,21 +1,22 @@
-import './App.css';
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useState } from "react";
 import { QrReader } from 'react-qr-reader';
-import qr from './qr.png';
-import {toast, ToastContainer} from 'react-toastify';
+import qr from '../images/qr.png';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {db, get, ref} from "./firebase";
-import {sha256} from "js-sha256";
-import addIcon from './add_icon.png'
+import { db, get, ref } from "./firebase";
+import { sha256 } from "js-sha256";
+import addIcon from '../images/add_icon.png'
+
 
 const results = []
+
 export default function Login() {
 
     const [text, setText] = useState("")
     const [data, setData] = useState("");
 
-    const [scanner, setScanner] = useState()
-    const [closeScanner, setCloseScanner] = useState()
+    const [scanner, setScanner] = useState(<div/>)
+    const [closeScanner, setCloseScanner] = useState(<div/>)
 
     const [codes, setCodes] = useState([])
     const [codesNumbers, setCodesNumbers] = useState([])
@@ -47,6 +48,7 @@ export default function Login() {
         if (oldCodes != null){
             const allCodesList = oldCodes.split("@")
             for (let c of allCodesList){
+                console.log(c)
                 addCode1(c)
             }
         }
@@ -59,7 +61,7 @@ export default function Login() {
         const temp = codes.slice()
         temp.push(<div id={text1} className={"one-code"}>
             <p style={{color: "white", }}>{shortenText(text1)}</p>
-            <img style={{width: "25px", height: "25px", cursor: "pointer"}} src={require("./delete.png")} key={Math.random()} onClick={() => {setRemove(text1)}}/>
+            <img style={{width: "25px", height: "25px", cursor: "pointer"}} src={require("../images/delete.png")} key={Math.random()} onClick={() => {setRemove(text1)}} alt={'delete'}/>
         </div> )
         setCodes(temp)
 
@@ -185,14 +187,15 @@ export default function Login() {
                 <img src={qr} className={"qr"} onClick={startScanning} alt={"QR Scanner"}/>
                 <h2>Or enter your computer quick connect code</h2>
 
-                <div>
+                <div className={'add'}>
                     <input id={"input"} className={"input"} type={"text"} placeholder={"Connect Code"} value={text} onChange={e => setText(e.target.value)}/>
-                    <img src={addIcon} className={"add-icon"} onClick={addCode}/>
+                    <input className={"comp-name"} id={"comp-name"} placeholder={"Computer nickname"}/>
+                    <img src={addIcon} className={"add-icon"} onClick={addCode} alt={'Add'}/>
+
+                    <button id={'connect1'} className={"button-19"} onClick={connect}>Connect</button>
                 </div>
 
-                <div className={"connect"}>
-                    <button className={"button-19"} onClick={connect}>Connect</button>
-                </div>
+
 
             </div>
 
@@ -205,7 +208,6 @@ export default function Login() {
                 {closeScanner}
             </div>
 
-            <input className={"comp-name"} id={"comp-name"} placeholder={"Computer nickname"}/>
 
             <div className={'toast'}>
                 <ToastContainer

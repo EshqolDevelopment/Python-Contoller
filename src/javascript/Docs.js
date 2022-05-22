@@ -1,14 +1,10 @@
-import React, {useEffect} from 'react';
-import './Docs.css'
+import React from 'react';
+import '../css/Docs.css'
+
+
 
 export default function Docs() {
-
-
-
-
-
     return (
-
         <div className="App1">
 
                 <h3 id={'title'}>Python Controller Built in functions</h3>
