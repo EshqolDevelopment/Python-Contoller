@@ -23,7 +23,7 @@ const run = []
 const CryptoJS = require("crypto-js");
 let bool = 0
 let c = false
-
+print(Date.now()/1000)
 
 export default function Home() {
 
@@ -50,7 +50,7 @@ export default function Home() {
     const [htmlSelect, setHtmlSelect] = useState([])
     const currentCode = useRef("")
     const [sha, setSha] = useState(null)
-    const [connected, setConnected] = useState(<h3 style={{color: 'orangered'}} className={'connected'}>Disconnected</h3>)
+    const [connected, setConnected] = useState(<h2 style={{color: 'orangered'}} className={'connected'}>Disconnected</h2>)
 
 
     function rnd(a) {
@@ -123,6 +123,7 @@ export default function Home() {
         }
     }
 
+
     function timer() {
         const clear = setInterval(() => {
 
@@ -143,27 +144,46 @@ export default function Home() {
         return () => clearInterval(clear)
     }
 
+
     function goConnect() {
         window.location = window.location.origin + "/connect";
     }
 
 
     function encrypt(message, key) {
+        key = getHash(key, Date.now())
         message += salt
         key = CryptoJS.enc.Utf8.parse(key);
         const iv = CryptoJS.enc.Utf8.parse('BBBBBBBBBBBBBBBB')
         return CryptoJS.AES.encrypt(message, key, { iv: iv, mode: CryptoJS.mode.CBC}).toString();
     }
 
+    function do_decrypt(key, encrypted, tic) {
+        try {
+            key = getHash(key, tic)
+            const iv = CryptoJS.enc.Utf8.parse('BBBBBBBBBBBBBBBB');
+            key = CryptoJS.enc.Utf8.parse(key);
+            let decrypted =  CryptoJS.AES.decrypt(encrypted, key, { iv: iv, mode: CryptoJS.mode.CBC});
+            decrypted = decrypted.toString(CryptoJS.enc.Utf8);
+            return decrypted
+        }
+        catch (e) {
+            return false
+        }
 
-    function decrypt(encrypted, key) {
-        const iv = CryptoJS.enc.Utf8.parse('BBBBBBBBBBBBBBBB');
-        key = CryptoJS.enc.Utf8.parse(key);
-        let decrypted =  CryptoJS.AES.decrypt(encrypted, key, { iv: iv, mode: CryptoJS.mode.CBC});
-        decrypted = decrypted.toString(CryptoJS.enc.Utf8);
-        return decrypted
     }
 
+    function decrypt(encrypted, key) {
+        return do_decrypt(key, encrypted, Date.now()) ||
+               do_decrypt(key, encrypted, Date.now() - 100000) ||
+               do_decrypt(key, encrypted, Date.now() + 100000)
+    }
+
+    function getHash(key, time) {
+        const hash = sha256.create();
+        hash.update(key + Math.floor(time / 100000));
+        return  hash.hex().slice(0, 16)
+    }
 
     function changeTheme() {
         setTheme(document.getElementById("slct").value)
@@ -205,10 +225,10 @@ export default function Home() {
             let output = e.val()
             let string = output
             if (output !== null) {
-                setConnected(<h2 style={{color: 'greenyellow'}} className={'connected'}>Connected</h2>)
                 output = decrypt(output, currentCode.current)
 
                 if (output.slice(output.length-5, output.length) === 'sigma') {
+                    setConnected(<h2 style={{color: 'greenyellow'}} className={'connected'}>Connected</h2>)
                     output = output.slice(0, output.length - 6)
                     string = output
 
