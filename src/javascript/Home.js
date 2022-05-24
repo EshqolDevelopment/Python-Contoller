@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { sha256 } from "js-sha256";
 import { write, ref, db, onValue } from './firebase'
 import AceEditor from "react-ace";
-import '../css/Home.css';
 import '../css/buttons.css';
+import '../css/Home.css';
 import 'brace/mode/python';
 import 'brace/theme/monokai';
 import 'brace/theme/github';
@@ -15,15 +15,12 @@ import 'brace/theme/dracula';
 import "ace-builds/src-noconflict/ext-language_tools";
 
 
-function print(x) {
-    console.log(x)
-}
-
 const run = []
 const CryptoJS = require("crypto-js");
 let bool = 0
 let c = false
-print(Date.now()/1000)
+
+
 
 export default function Home() {
 
@@ -280,6 +277,7 @@ export default function Home() {
         return curr || def
     }
 
+
     return (
         <div className={"App"}>
 
@@ -299,83 +297,88 @@ export default function Home() {
                 </ul>
             </div>
 
-            <button className={'button-28'} id={"go-connect"} onClick={goConnect}>Connect Page</button>
+            {/*<button className={'button-28'} id={"go-connect"} onClick={goConnect}>Connect Page</button>*/}
 
-            <div className={'right'}>
-                <div className={"send"}>
-                    <button className="button-27" id={"send-btn"} onClick={send}>Send commands</button>
+            <div className={'all'}>
+                <div className={'right'}>
+                    <div className={"send"}>
+                        <button className="button-27" id={"send-btn"} onClick={send}>Send commands</button>
+                    </div>
+
+                    <h3 className={"output"}>Output: <br/><br/>{output}</h3>
+
+                    <select className="codes-list" onChange={onSelectCode} defaultValue={getItem("default_comp")}>
+                        <option disabled selected>Select Computer</option>
+                        {htmlSelect}
+                    </select>
+
+                    {connected}
                 </div>
 
-                <h3 className={"output"}>Output: <br/><br/>{output}</h3>
 
-                <select className="codes-list" onChange={onSelectCode} defaultValue={getItem("default_comp")}>
-                    <option  disabled selected>Select Computer</option>
-                    {htmlSelect}
-                </select>
+                <div className={'center'}>
+                    <div className={'editor'}>
+                        <AceEditor
+                            placeholder="Write here any script to send your computer"
+                            mode="python"
+                            theme={theme}
+                            className={'editor-box'}
+                            onChange={(x) => {
+                                localStorage.setItem("python", x)
+                                setValue(x)
+                            }}
+                            fontSize={17}
+                            showPrintMargin={true}
+                            showGutter={true}
+                            highlightActiveLine={true}
+                            value={value}
+                            setOptions={{
+                                enableBasicAutocompletion: true,
+                                enableLiveAutocompletion: true,
+                                enableSnippets: false,
+                                showLineNumbers: true,
+                                tabSize: 2,
+                            }}
+                            style={{height: '100%', width: '100%'}}/>
 
-                {connected}
-            </div>
-
-
-            <div className={'center'}>
-                <div className={'editor'}>
-                    <AceEditor
-                        placeholder="Write here any script to send your computer"
-                        mode="python"
-                        theme={theme}
-                        className={'editor-box'}
-                        onChange={(x) => {
-                            localStorage.setItem("python", x)
-                            setValue(x)
-                        }}
-                        fontSize={17}
-                        showPrintMargin={true}
-                        showGutter={true}
-                        highlightActiveLine={true}
-                        value={value}
-                        setOptions={{
-                            enableBasicAutocompletion: true,
-                            enableLiveAutocompletion: true,
-                            enableSnippets: false,
-                            showLineNumbers: true,
-                            tabSize: 2,
-                        }}
-                        style={{height: '100%', width: '100%'}}/>
-
-                    <div className={"themes"}>
-                        <label className="select" htmlFor="slct">
-                            <select defaultValue={getItem1('theme', "xcode")} onChange={changeTheme} id="slct" required="required">
-                                <option value disabled="disabled" >Select option</option>
-                                <option value="xcode">xcode</option>
-                                <option value="chrome">chrome</option>
-                                <option value="github">github</option>
-                                <option value="tomorrow">tomorrow</option>
-                                <option value="terminal">terminal</option>
-                                <option value="dracula">dracula</option>
-                                <option value="monokai">monokai</option>
-                            </select>
-                            <svg>
-                                <use xlinkHref="#select-arrow-down" />
-                            </svg></label>
-                        <svg className="sprites">
-                            <symbol id="select-arrow-down" viewBox="0 0 10 6">
-                                <polyline points="1 1 5 5 9 1" />
-                            </symbol>
-                        </svg>
+                        <div className={"themes"}>
+                            <label className="select" htmlFor="slct">
+                                <select defaultValue={getItem1('theme', "xcode")} onChange={changeTheme} id="slct" required="required">
+                                    <option value disabled="disabled" >Select option</option>
+                                    <option value="xcode">xcode</option>
+                                    <option value="chrome">chrome</option>
+                                    <option value="github">github</option>
+                                    <option value="tomorrow">tomorrow</option>
+                                    <option value="terminal">terminal</option>
+                                    <option value="dracula">dracula</option>
+                                    <option value="monokai">monokai</option>
+                                </select>
+                                <svg>
+                                    <use xlinkHref="#select-arrow-down" />
+                                </svg></label>
+                            <svg className="sprites">
+                                <symbol id="select-arrow-down" viewBox="0 0 10 6">
+                                    <polyline points="1 1 5 5 9 1" />
+                                </symbol>
+                            </svg>
+                        </div>
                     </div>
                 </div>
-            </div>
 
 
-            <div className={'left'}>
-                <h3 className={"description"}>Welcome to python controller! the tool that enables you to send python
-                    commands and scripts to your private computer, from anywhere around the globe. for installing the
-                    computer app use the button bellow for installing in microsoft store</h3>
+                <div className={'left'}>
+                    <h3 className={"description"}>Welcome to python controller! the tool that enables you to send python
+                        commands and scripts to your private computer, from anywhere around the globe. for installing the
+                        computer app use the button bellow for installing in microsoft store</h3>
 
-                <img src={"https://getbadgecdn.azureedge.net/images/English_L.png"} alt={"Get From microsoft store"} className={"install"}/>
+                    <div className={'images'}>
+                        <img src={"https://getbadgecdn.azureedge.net/images/English_L.png"} alt={"Get From microsoft store"} className={"install"}/>
 
-                <button className={"button-80"} id={"docs-button"} onClick={() =>
-                    window.location.replace(window.location.origin + "/docs")}>See Documentation</button>
+                        <button className={"button-80"} id={"docs-button"} onClick={() =>
+                            window.location.replace(window.location.origin + "/docs")}>See Documentation</button>
+                    </div>
+
+                </div>
             </div>
 
         </div>

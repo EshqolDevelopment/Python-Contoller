@@ -6,13 +6,11 @@ body {
     padding: 0;
 }
 
-
 .right, .center, .left {
     position: absolute;
     height: 88vh;
     bottom: 0;
 }
-
 
 .right {
     width: 30vw;
@@ -46,7 +44,7 @@ body {
     top: 0;
     left: 0;
     width: 100vw;
-    height:100vh;
+    height: 100vh;
     overflow: hidden;
 }
 
@@ -177,4 +175,164 @@ body {
 #send-btn {
     position: relative;
     top: 10vh;
+}
+
+
+
+@media (max-width: 900px) {
+
+    .all {
+        position: absolute;
+        width: 92vw;
+        left: 4vw;
+        top: 12vh;
+        height: 100vh;
+    }
+
+    .right, .center, .left {
+        width: 100%;
+        left: 0;
+    }
+
+    .right {
+        height: 30vh;
+        top: 40vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .center {
+        height: 40vh;
+        top: 0;
+    }
+
+    .left {
+        top: 70vh;
+        height: 40vh;
+    }
+
+    .area {
+        height: 125vh;
+    }
+
+    .editor {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .send {
+        left: 5%;
+        top: -25%;
+        width: 38%;
+        height: 25%;
+    }
+
+    .button-27 {
+        border: 1px solid #1A1A1A;
+        border-radius: 10px;
+        font-size: 15px;
+    }
+
+    .output {
+        left: 10%;
+        top: 30%;
+        width: 80%;
+    }
+
+    .decription {
+        top: 10%;
+        left: 20%;
+    }
+
+    #a {
+    }
+
+    .sprites {
+        width: 0;
+        height: 0;
+    }
+
+    .description {
+        width: 100%;
+        left: 0;
+        top: 1vh;
+    }
+
+    .images {
+        position: absolute;
+        width: 90%;
+        left: 5%;
+        height: 5vh;
+        background: red;
+        bottom: 10%;
+    }
+
+    .install {
+        top: 0;
+        left: 00%;
+        height: 100%;
+        width: auto;
+    }
+
+    #docs-button {
+        position: absolute;
+        right: -10vw;
+        top: 0;
+        height: 100%;
+        width: auto;
+        max-width: 45%;
+    }
+
+    .title1 {
+        top: 3%;
+        width: 90%;
+        left: 5%;
+        font-size: 20px;
+    }
+
+    .content1 {
+        height: 94vh;
+        width: 100%;
+        left: 0;
+        top: 6vh;
+    }
+
+    .themes {
+        bottom: 0;
+        right: 0;
+    }
+
+    #go-connect {
+        left: 3vw;
+        top: 3vh;
+        width: 8vw;
+    }
+
+    .codes-home {
+        width: 35vw;
+        left: 31.8vw;
+        top: 83vh;
+    }
+
+    .codes-list {
+        padding: 6.5px;
+        top: 36%;
+        left: 51%;
+
+    }
+
+    .connected {
+        top: 4%;
+        left: 20%;
+        font-size: 19px;
+    }
+
+    #send-btn {
+        top: 10vh;
+    }
+
+
+
 }

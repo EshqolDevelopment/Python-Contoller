@@ -1,6 +1,4 @@
 
-
-
 .title{
     position: absolute;
     width: 100%;
@@ -9,34 +7,12 @@
     color: black;
 }
 
-
-.bg {
-    animation:slide 3s ease-in-out infinite alternate;
-    background-image: linear-gradient(-60deg, #6c3 50%, #09f 50%);
-    bottom:0;
-    left:-50%;
-    opacity:.5;
-    position:fixed;
-    right:-50%;
-    top:0;
-    z-index:-1;
-}
-
-.bg2 {
-    animation-direction:alternate-reverse;
-    animation-duration:4s;
-}
-
-.bg3 {
-    animation-duration:5s;
-}
-
 .content {
     background-color:rgba(255,255,255,.8);
     border-radius: 1em;
     box-shadow: 0 0 .25em rgba(0,0,0,.4);
     box-sizing: border-box;
-    position: fixed;
+    position: absolute;
     width: 52%;
     height: 55%;
     text-align: center;
@@ -45,77 +21,9 @@
     transform: translate(-50%, -50%);
 }
 
-
-@keyframes slide {
-    0% {
-        transform: translateX(-25%);
-    }
-    100% {
-        transform: translateX(25%);
-    }
-}
-
-
 .qr {
     height: 20%;
     cursor: pointer;
-}
-
-.button-19 {
-    background-color: #1899D6;
-    border: solid transparent;
-    border-radius: 16px;
-    border-width: 0 0 4px;
-    box-sizing: border-box;
-    color: #FFFFFF;
-    cursor: pointer;
-    display: inline-block;
-    font-family: din-round,sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: .8px;
-    line-height: 20px;
-    margin: 0;
-    outline: none;
-    overflow: visible;
-    padding: 13px 16px;
-    text-align: center;
-    text-transform: uppercase;
-    touch-action: manipulation;
-    transition: filter .2s;
-    user-select: none;
-    -webkit-user-select: none;
-    vertical-align: middle;
-    white-space: nowrap;
-    width: 100%;
-}
-
-.button-19:after {
-    background-clip: padding-box;
-    background-color: #1CB0F6;
-    border: solid transparent;
-    border-radius: 16px;
-    border-width: 0 0 4px;
-    bottom: -4px;
-    content: "";
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: -1;
-}
-
-.button-19:focus {
-    user-select: auto;
-}
-
-.button-19:hover:not(:disabled) {
-    filter: brightness(1.1);
-    -webkit-filter: brightness(1.1);
-}
-
-.button-19:disabled {
-    cursor: auto;
 }
 
 #connect1 {
@@ -131,7 +39,6 @@
     padding: 12px;
     width: 28%;
 }
-
 
 .comp-name {
     position: absolute;
@@ -163,137 +70,6 @@
     left: 33%;
 }
 
-
-.btn-close {
-    margin: 0;
-    border: 0;
-    padding: 0;
-    background: #06f;
-    border-radius: 50%;
-    width: 80px;
-    height: 80px;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: all 150ms;
-}
-
-.btn-close .icon-cross {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    background: none;
-    position: relative;
-    width: 40px;
-    height: 40px;
-}
-
-.btn-close .icon-cross:before, .btn-close .icon-cross:after {
-    content: '';
-    position: absolute;
-    top: 17px;
-    left: 0;
-    right: 0;
-    height: 6px;
-    background: #fff;
-    border-radius: 6px;
-}
-
-.btn-close .icon-cross:before {
-    transform: rotate(45deg);
-}
-
-.btn-close .icon-cross:after {
-    transform: rotate(-45deg);
-}
-
-.btn-close .icon-cross span {
-    display: block;
-}
-
-.btn-close:hover, .btn-close:focus {
-    background: #0052cc;
-}
-
-.cross-stand-alone {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    background: none;
-    position: relative;
-    width: 40px;
-    height: 40px;
-}
-
-.cross-stand-alone:before, .cross-stand-alone:after {
-    content: '';
-    position: absolute;
-    top: 18px;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: #000;
-    border-radius: 4px;
-}
-
-.cross-stand-alone:before {
-    transform: rotate(45deg);
-}
-
-.cross-stand-alone:after {
-    transform: rotate(-45deg);
-}
-
-.cross-stand-alone span {
-    display: block;
-}
-
-.cross-1px {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    background: none;
-    position: relative;
-    width: 80px;
-    height: 80px;
-}
-
-.cross-1px:before, .cross-1px:after {
-    content: '';
-    position: absolute;
-    top: 39.5px;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: #000;
-    border-radius: 1px;
-}
-
-.cross-1px:before {
-    transform: rotate(45deg);
-}
-
-.cross-1px:after {
-    transform: rotate(-45deg);
-}
-
-.cross-1px span {
-    display: block;
-}
-
-.visually-hidden {
-    position: absolute !important;
-    clip: rect(1px, 1px, 1px, 1px);
-    padding: 0 !important;
-    border: 0 !important;
-    height: 1px !important;
-    width: 1px !important;
-    overflow: hidden;
-}
-
-
 .exit-camera{
     position: absolute;
     left: 40%;
@@ -314,7 +90,6 @@ code {
     monospace;
 }
 
-
 .codes-div{
     display: flex;
     background: #5a667f;
@@ -324,7 +99,7 @@ code {
     left: 27.5vw;
     justify-content: flex-start;
     align-items: center;
-    border-radius: 40px;
+    border-radius: 30px;
     top: 78%;
     overflow: auto;
     padding: 10px;
@@ -338,4 +113,80 @@ code {
     height: 70%;
     display: flex;
     align-items: center;
+}
+
+
+@media (max-width: 900px) {
+
+    .title{
+        top: 6%;
+        font-size: 19px;
+    }
+
+    .content {
+        width: 92%;
+        height: 57%;
+        top: 47%;
+    }
+
+    .qr {
+        height: 20%;
+    }
+
+    .input, .comp-name {
+        position: absolute;
+        left: 22%;
+        padding: 10px;
+        width: 50%;
+    }
+
+    .add-icon {
+        height: 15%;
+        left: 84%;
+        top: 15%;
+    }
+
+    .scanner {
+        position: absolute;
+        width: 35%;
+        top: 18.3%;
+        left: 33%;
+    }
+
+    .exit-camera{
+        left: 30%;
+        top:  67vh;
+    }
+
+    .codes-div{
+        position: absolute;
+        width: 90vw;
+        height: 5vh;
+        left: 5vw;
+        top: 78%;
+        padding: 10px 0;
+        border-radius: 15px;
+    }
+
+    .one-code{
+        border-radius: 8px;
+    }
+
+    .h2 {
+        position: relative;
+        font-size: 20px;
+        width: 80%;
+        left: 10vw;
+    }
+
+    .add {
+        height: 40%;
+    }
+
+    #connect1 {
+        width: 30%;
+        top: 63%;
+        left: 35%;
+    }
+
 }

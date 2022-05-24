@@ -24,7 +24,6 @@ export default function Login() {
     const [mapName, setMapName] = useState( (localStorage.getItem("names") || "").split("*"))
 
 
-
     useEffect(() => {
         if (!results.includes(data)){
             setText(data)
@@ -69,10 +68,7 @@ export default function Login() {
         temp1.push(text1)
         setCodesNumbers(temp1)
         setText("")
-
     }
-
-
 
 
     async function connect(){
@@ -85,7 +81,6 @@ export default function Login() {
     }
 
 
-
     function close(){
         setCloseScanner(<div/>)
         setScanner(<div/>)
@@ -93,16 +88,12 @@ export default function Login() {
 
 
     function startScanning(){
-        setScanner( <QrReader
+        setScanner(<QrReader
             onResult={(result, error) => {
 
-                if (!!result) {
-                    setData(result?.text);
-                }
+                if (!!result) setData(result?.text);
 
-                if (!!error) {
-                    console.info(error);
-                }
+                if (!!error) console.info(error);
 
             }}
             style={{ width: '100%' }}
@@ -124,7 +115,6 @@ export default function Login() {
         }
 
         return map[text1]
-        // return "..." + text1.slice(text1.length-5)
     }
 
     async function addCode() {
@@ -152,17 +142,14 @@ export default function Login() {
             })
         }
         else toast.error("The code is invalid")
-
-
     }
 
     function removeCode(text1, codes1){
         let temp = []
-        for (let code of codes1){
-            if (code["props"]["id"] !== text1){
+        for (let code of codes1)
+            if (code["props"]["id"] !== text1)
                 temp.push(code)
-            }
-        }
+
         setCodes(temp)
 
         let temp1 = []
@@ -183,9 +170,9 @@ export default function Login() {
             <div className="bg bg2"/>
             <div className="bg bg3"/>
             <div className="content">
-                <h2>Scan the computer qr code to connect</h2>
+                <h2 className={'h2'}>Scan the computer qr code to connect</h2>
                 <img src={qr} className={"qr"} onClick={startScanning} alt={"QR Scanner"}/>
-                <h2>Or enter your computer quick connect code</h2>
+                <h2 className={'h2'}>Or enter your computer quick connect code</h2>
 
                 <div className={'add'}>
                     <input id={"input"} className={"input"} type={"text"} placeholder={"Connect Code"} value={text} onChange={e => setText(e.target.value)}/>
