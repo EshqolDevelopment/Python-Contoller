@@ -118,11 +118,13 @@ export default function Home() {
     }, [sha])
 
 
+
+
     function setDefault() {
         const val = localStorage.getItem("python")
         if (val)
             setValue(localStorage.getItem("python"))
-        else setValue("\n\nprint('Hello World!')")
+        else setValue("\nprint('Hello World!')")
 
         localStorage.setItem("isRunning", "true")
         if (codes == null){
@@ -131,9 +133,13 @@ export default function Home() {
         else{
             const temp = []
             for (let c of codes.split("@")){
+
                 if (map[c]){
-                    console.log(c)
-                    temp.push(<option key={c} value={c}>{map[c]}</option>)
+                    let b1 = false
+                    if (c === localStorage.getItem("default_comp")){
+                        b1 = true
+                    }
+                    temp.push(<option selected={b1} key={c} value={c}>{map[c]}</option>)
                 }
             }
             setHtmlSelect(temp)
@@ -168,6 +174,7 @@ export default function Home() {
         let temp1 = ""
 
         onValue(out, (e) => {
+            console.log("hello")
             let output = e.val()
             let string = output
             if (output !== null) {
@@ -212,12 +219,21 @@ export default function Home() {
     }
 
 
+
     function onSelectCode(e){
         const cde = e.target.value
+        // bool = 2
         localStorage.setItem("default_comp", cde)
         setCurrentCode(cde)
         shaCode(cde)
     }
+
+    useEffect(() => {
+        setCurrentCode(localStorage.getItem("default_comp"))
+        shaCode(localStorage.getItem("default_comp"))
+    }, [shaCode])
+
+
 
 
     function getItem(key, def) {
@@ -255,7 +271,7 @@ export default function Home() {
 
                         <h4 className={"output"}>Output: <br/><br/>{output}</h4>
 
-                        <select className="codes-list" onChange={onSelectCode} defaultValue={getItem("default_comp")}>
+                        <select className="codes-list" onChange={onSelectCode} >
                             <option>Select Computer</option>
                             {htmlSelect}
                         </select>
