@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import { sha256 } from "js-sha256";
-import { write, ref, db, onValue } from './firebase'
+import { useEffect, useState } from "react";
+import { getSha, encrypt, decrypt, rnd, base64ToArrayBuffer } from './encryption'
+import { db, write, ref, onValue } from './firebase'
 import AceEditor from "react-ace";
+import '../css/background.css';
 import '../css/buttons.css';
+import '../css/button3.css';
 import '../css/Home.css';
 import 'brace/mode/python';
 import 'brace/theme/monokai';
@@ -15,11 +17,10 @@ import 'brace/theme/dracula';
 import "ace-builds/src-noconflict/ext-language_tools";
 
 
+const themes_names = ['xcode', 'chrome', 'github', 'tomorrow', 'terminal', 'dracula', 'monokai']
 const run = []
-const CryptoJS = require("crypto-js");
 let bool = 0
 let c = false
-
 
 
 export default function Home() {
@@ -33,34 +34,51 @@ export default function Home() {
     if (n123 === null)
         goConnect()
 
-    for (let nm of n123.split("*")){
+    for (let nm of n123.split("*")) {
         const [code, name] = nm.split("@")
         map[code] = name
     }
 
-
     const [value, setValue] = useState("")
-    const salt = "sigma"
     const [output, setOutput] = useState("")
     const [theme, setTheme] = useState(getItem1('theme', "xcode"))
     const [back] = useState(`rgba(${rnd(40)}, ${rnd(80)}, ${rnd(190)}, 1)`)
     const [htmlSelect, setHtmlSelect] = useState([])
-    const currentCode = useRef("")
+    const [currentCode, setCurrentCode] = useState('')
     const [sha, setSha] = useState(null)
     const [connected, setConnected] = useState(<h2 style={{color: 'orangered'}} className={'connected'}>Disconnected</h2>)
 
 
-    function rnd(a) {
-        return (Math.floor(Math.random() * 24) - 10) + a
+    function changeTheme() {
+        setTheme(document.getElementById("slct").value)
+        localStorage.setItem('theme', document.getElementById("slct").value)
     }
 
-    useEffect(() => {
-        if (currentCode.current){
-            const hash = sha256.create();
-            hash.update(currentCode.current);
-            setSha(hash.hex());
+
+    function send() {
+        if (value.replaceAll(" ", "").includes("is_running()")){
+            setTimeout(() => {
+
+                if (localStorage.getItem("isRunning") !== "True")
+                    localStorage.setItem("isRunning", "false")
+
+            }, 2000)
         }
-    }, [currentCode])
+        const encryptedText = encrypt(value, currentCode)
+
+        write(sha, encryptedText)
+    }
+
+
+    function shaCode(cde = undefined) {
+        if (cde === undefined) {
+            cde = currentCode
+        }
+
+        if (currentCode) {
+            setSha(getSha(cde))
+        }
+    }
 
 
     function downloadFile(data, name){
@@ -92,6 +110,7 @@ export default function Home() {
             return
 
         bool += 1
+        shaCode()
         setDefault()
         readOutput()
         timer()
@@ -113,7 +132,8 @@ export default function Home() {
             const temp = []
             for (let c of codes.split("@")){
                 if (map[c]){
-                    temp.push(<option value={c}>{map[c]}</option>)
+                    console.log(c)
+                    temp.push(<option key={c} value={c}>{map[c]}</option>)
                 }
             }
             setHtmlSelect(temp)
@@ -124,94 +144,23 @@ export default function Home() {
     function timer() {
         const clear = setInterval(() => {
 
-            if (currentCode.current !== undefined) {
+            if (currentCode !== undefined) {
                 const val = 'print("--checking if running")\nis_running() '
-                const encryptedText = encrypt(val, currentCode.current)
+                const encryptedText = encrypt(val, currentCode)
                 c = false
                 write(sha, encryptedText)
 
                 setTimeout(() => {
                     if (!c) setConnected(<h2 style={{color: 'orangered'}} className={'connected'}>Disconnected</h2>)
-                }, 4000)
+                }, 5000)
             }
-
-
-        }, 5000)
-
+        }, 6000)
         return () => clearInterval(clear)
     }
 
 
     function goConnect() {
         window.location = window.location.origin + "/connect";
-    }
-
-
-    function encrypt(message, key) {
-        key = getHash(key, Date.now())
-        message += salt
-        key = CryptoJS.enc.Utf8.parse(key);
-        const iv = CryptoJS.enc.Utf8.parse('BBBBBBBBBBBBBBBB')
-        return CryptoJS.AES.encrypt(message, key, { iv: iv, mode: CryptoJS.mode.CBC}).toString();
-    }
-
-    function do_decrypt(key, encrypted, tic) {
-        try {
-            key = getHash(key, tic)
-            const iv = CryptoJS.enc.Utf8.parse('BBBBBBBBBBBBBBBB');
-            key = CryptoJS.enc.Utf8.parse(key);
-            let decrypted =  CryptoJS.AES.decrypt(encrypted, key, { iv: iv, mode: CryptoJS.mode.CBC});
-            decrypted = decrypted.toString(CryptoJS.enc.Utf8);
-            return decrypted
-        }
-        catch (e) {
-            return false
-        }
-
-    }
-
-    function decrypt(encrypted, key) {
-        return do_decrypt(key, encrypted, Date.now()) ||
-               do_decrypt(key, encrypted, Date.now() - 100000) ||
-               do_decrypt(key, encrypted, Date.now() + 100000)
-    }
-
-    function getHash(key, time) {
-        const hash = sha256.create();
-        hash.update(key + Math.floor(time / 100000));
-        return  hash.hex().slice(0, 16)
-    }
-
-    function changeTheme() {
-        setTheme(document.getElementById("slct").value)
-        localStorage.setItem('theme', document.getElementById("slct").value)
-    }
-
-
-    function send() {
-        if (value.replaceAll(" ", "").includes("is_running()")){
-            setTimeout(() => {
-
-                if (localStorage.getItem("isRunning") !== "True")
-                    localStorage.setItem("isRunning", "false")
-
-                console.log(localStorage.getItem("isRunning"))
-            }, 2000)
-        }
-        const encryptedText = encrypt(value, currentCode.current)
-
-        write(sha, encryptedText)
-    }
-
-
-    function base64ToArrayBuffer(base64) {
-        const binary_string = window.atob(base64);
-        const len = binary_string.length;
-        const bytes = new Uint8Array(len);
-        for (let i = 0; i < len; i++) {
-            bytes[i] = binary_string.charCodeAt(i);
-        }
-        return bytes.buffer;
     }
 
     function readOutput() {
@@ -222,55 +171,62 @@ export default function Home() {
             let output = e.val()
             let string = output
             if (output !== null) {
-                output = decrypt(output, currentCode.current)
+                output = decrypt(output, currentCode)
 
                 if (output.slice(output.length-5, output.length) === 'sigma') {
                     setConnected(<h2 style={{color: 'greenyellow'}} className={'connected'}>Connected</h2>)
-                    output = output.slice(0, output.length - 6)
-                    string = output
 
-                    if (output.includes("True")) localStorage.setItem("isRunning", "True")
+                    if (output !== 'sigma') {
+                        output = output.slice(0, output.length - 6)
+                        string = output
 
-                    if (output.includes("@@@")){
-                        const lst = output.split("@@@").filter(e => e.includes("autotasks123"))
-                        const temp = lst.map(it => it.split("autotasks123"))
+                        if (output.includes("True")) localStorage.setItem("isRunning", "True")
 
-                        for (let b64 of temp){
-                            const [data, name] = b64
-                            string = string.replace(data, "").replace(name, "")
+                        if (output.includes("@@@")){
+                            const lst = output.split("@@@").filter(e => e.includes("autotasks123"))
+                            const temp = lst.map(it => it.split("autotasks123"))
 
-                            const arr = base64ToArrayBuffer(data)
+                            for (let b64 of temp){
+                                const [data, name] = b64
+                                string = string.replace(data, "").replace(name, "")
 
+                                const arr = base64ToArrayBuffer(data)
 
-                            if ("" !== name) {
-                                temp1 = name
-                                downloadFile(arr, name)
+                                if ("" !== name) {
+                                    temp1 = name
+                                    downloadFile(arr, name)
+                                }
                             }
-
+                            setOutput("Download was successful!")
                         }
 
-                        setOutput("Download was successful!")
+                        else if (!string.startsWith('--checking if running')) setOutput(string)
+
+                        else c = true
                     }
 
-                    else if (!string.startsWith('--checking if running'))
-                        setOutput(string)
-
-                    else c = true
+                    else setOutput("No output")
                 }
             }
         })
     }
 
+
     function onSelectCode(e){
-        localStorage.setItem("default_comp", e.target.value)
-        currentCode.current = (e.target.value)
+        const cde = e.target.value
+        localStorage.setItem("default_comp", cde)
+        setCurrentCode(cde)
+        shaCode(cde)
     }
 
+
     function getItem(key, def) {
-        const curr  = localStorage.getItem(key)
-        currentCode.current = (curr || def)
-        return curr || def
+        const curr  = (localStorage.getItem(key) || def)
+        if (curr !== currentCode)
+            setCurrentCode(curr)
+        return curr
     }
+
 
     function getItem1(key, def) {
         const curr  = localStorage.getItem(key)
@@ -281,106 +237,90 @@ export default function Home() {
     return (
         <div className={"App"}>
 
-            <h1 className={"title1"}>Python Controller - Fast and Secure</h1>
+                <h1 className={"title1"}>Python Controller - Fast and Secure</h1>
 
-            <div className="area" style={{backgroundColor: back}}>
-                <ul className="circles">
-                    <li/>
-                    <li/>
-                    <li/>
-                    <li/>
-                    <li/>
-                    <li/>
-                    <li/>
-                    <li/>
-                    <li/>
-                </ul>
-            </div>
-
-            {/*<button className={'button-28'} id={"go-connect"} onClick={goConnect}>Connect Page</button>*/}
-
-            <div className={'all'}>
-                <div className={'right'}>
-                    <div className={"send"}>
-                        <button className="button-27" id={"send-btn"} onClick={send}>Send commands</button>
-                    </div>
-
-                    <h3 className={"output"}>Output: <br/><br/>{output}</h3>
-
-                    <select className="codes-list" onChange={onSelectCode} defaultValue={getItem("default_comp")}>
-                        <option disabled selected>Select Computer</option>
-                        {htmlSelect}
-                    </select>
-
-                    {connected}
+                <div className="area" style={{backgroundColor: back}}>
+                    <ul className="circles">
+                        {[...Array(10).keys()].map((i) => <li key={i}/>)}
+                    </ul>
                 </div>
 
+                <button className={'button-28'} id={"go-connect"} onClick={goConnect}>Connect Page</button>
 
-                <div className={'center'}>
-                    <div className={'editor'}>
-                        <AceEditor
-                            placeholder="Write here any script to send your computer"
-                            mode="python"
-                            theme={theme}
-                            className={'editor-box'}
-                            onChange={(x) => {
-                                localStorage.setItem("python", x)
-                                setValue(x)
-                            }}
-                            fontSize={17}
-                            showPrintMargin={true}
-                            showGutter={true}
-                            highlightActiveLine={true}
-                            value={value}
-                            setOptions={{
-                                enableBasicAutocompletion: true,
-                                enableLiveAutocompletion: true,
-                                enableSnippets: false,
-                                showLineNumbers: true,
-                                tabSize: 2,
-                            }}
-                            style={{height: '100%', width: '100%'}}/>
+                <div className={'all'}>
+                    <div className={'right'}>
+                        <div className={"send"}>
+                            <button className="button-3" id={"send-btn"} onClick={send}>Send commands</button>
+                        </div>
 
-                        <div className={"themes"}>
-                            <label className="select" htmlFor="slct">
-                                <select defaultValue={getItem1('theme', "xcode")} onChange={changeTheme} id="slct" required="required">
-                                    <option value disabled="disabled" >Select option</option>
-                                    <option value="xcode">xcode</option>
-                                    <option value="chrome">chrome</option>
-                                    <option value="github">github</option>
-                                    <option value="tomorrow">tomorrow</option>
-                                    <option value="terminal">terminal</option>
-                                    <option value="dracula">dracula</option>
-                                    <option value="monokai">monokai</option>
-                                </select>
-                                <svg>
-                                    <use xlinkHref="#select-arrow-down" />
-                                </svg></label>
-                            <svg className="sprites">
-                                <symbol id="select-arrow-down" viewBox="0 0 10 6">
-                                    <polyline points="1 1 5 5 9 1" />
-                                </symbol>
-                            </svg>
+                        <h4 className={"output"}>Output: <br/><br/>{output}</h4>
+
+                        <select className="codes-list" onChange={onSelectCode} defaultValue={getItem("default_comp")}>
+                            <option>Select Computer</option>
+                            {htmlSelect}
+                        </select>
+
+                        {connected}
+                    </div>
+
+                    <div className={'center'}>
+                        <div className={'editor'}>
+                            <AceEditor
+                                placeholder="Write here any script to send your computer"
+                                mode="python"
+                                theme={theme}
+                                className={'editor-box'}
+                                onChange={(x) => {
+                                    localStorage.setItem("python", x)
+                                    setValue(x)
+                                }}
+                                fontSize={17}
+                                showPrintMargin={true}
+                                showGutter={true}
+                                highlightActiveLine={true}
+                                value={value}
+                                setOptions={{
+                                    enableBasicAutocompletion: true,
+                                    enableLiveAutocompletion: true,
+                                    enableSnippets: false,
+                                    showLineNumbers: true,
+                                    tabSize: 2,
+                                }}
+                                style={{height: '100%', width: '100%'}}/>
+
+                            <div className={"themes"}>
+                                <label className="select" htmlFor="slct">
+                                    <select defaultValue={getItem1('theme', "xcode")} onChange={changeTheme} id="slct" required="required">
+                                        <option value disabled="disabled" >Select option</option>
+                                        {themes_names.map((s) => <option key={s} value={s}>{s}</option>)}
+                                    </select>
+                                    <svg>
+                                        <use xlinkHref="#select-arrow-down" />
+                                    </svg>
+                                </label>
+                                <svg className="sprites">
+                                    <symbol id="select-arrow-down" viewBox="0 0 10 6">
+                                        <polyline points="1 1 5 5 9 1" />
+                                    </symbol>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className={'left'}>
+                        <h3 className={"description"}>Welcome to python controller! the tool that enables you to send python
+                            commands and scripts to your private computer, from anywhere around the globe. for installing the
+                            computer app use the button bellow for installing in microsoft store</h3>
+
+                        <div className={'images'}>
+                            <img src={"https://getbadgecdn.azureedge.net/images/English_L.png"}
+                                 alt={"Get From microsoft store"} className={"install"}/>
+
+                            <button className={"button-3"} id={"docs-button"} onClick={() =>
+                                window.location.replace(window.location.origin + "/docs")}>See Documentation</button>
                         </div>
                     </div>
                 </div>
-
-
-                <div className={'left'}>
-                    <h3 className={"description"}>Welcome to python controller! the tool that enables you to send python
-                        commands and scripts to your private computer, from anywhere around the globe. for installing the
-                        computer app use the button bellow for installing in microsoft store</h3>
-
-                    <div className={'images'}>
-                        <img src={"https://getbadgecdn.azureedge.net/images/English_L.png"} alt={"Get From microsoft store"} className={"install"}/>
-
-                        <button className={"button-80"} id={"docs-button"} onClick={() =>
-                            window.location.replace(window.location.origin + "/docs")}>See Documentation</button>
-                    </div>
-
-                </div>
-            </div>
-
         </div>
     )
 }

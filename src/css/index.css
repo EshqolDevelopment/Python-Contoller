@@ -148,9 +148,9 @@ code {
 
     .scanner {
         position: absolute;
-        width: 35%;
+        width: 80%;
         top: 18.3%;
-        left: 33%;
+        left: 10%;
     }
 
     .exit-camera{

@@ -14,7 +14,7 @@ body {
 
 .right {
     width: 30vw;
-    right: 0;
+    right: 2vw;
 }
 
 .center {
@@ -37,15 +37,6 @@ body {
     text-align: center;
     color: #fff;
     font-size: 50px;
-}
-
-.area {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
 }
 
 .editor {
@@ -73,9 +64,12 @@ body {
     position: absolute;
     left: 25%;
     top: 45%;
-    width: 50%;
+    width: 75%;
+    height: 42.5%;
     white-space: pre-wrap;
     word-break: break-all;
+    overflow-y: auto;
+    font-size: 1.05rem;
 }
 
 .decription {
@@ -107,9 +101,9 @@ body {
 
 .install {
     position: absolute;
-    left: 39%;
+    left: 37%;
     top: 60%;
-    width: 22%;
+    width: 25%;
     cursor: pointer;
 }
 
@@ -138,17 +132,16 @@ body {
 
 #docs-button {
     position: absolute;
-    left: 35%;
+    left: 30%;
     top: 70%;
     height: 6%;
-    width: 30%;
 }
 
 #go-connect {
     position: absolute;
     left: 3vw;
     top: 3vh;
-    width: 8vw;
+    width: 10vw;
 }
 
 .codes-home {
@@ -161,7 +154,7 @@ body {
     position: absolute;
     padding: 10px;
     top: 19%;
-    left: 38%;
+    left: 30%;
     border-radius: 10px;
 }
 

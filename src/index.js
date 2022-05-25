@@ -31,14 +31,3 @@ root.render(
       </BrowserRouter>
   </React.StrictMode>
 );
-
-
-
-// REACT_APP_FIREBASE_API_KEY=AIzaSyDISmGGEwtm00nkRmDh2MhGCTU7fQCTQcI
-// REACT_APP_FIREBASE_AUTH_DOMAIN=python-controller-f0c11.firebaseapp.com
-// REACT_APP_FIREBASE_DATABASE_URL=https://python-controller-f0c11-default-rtdb.firebaseio.com
-// REACT_APP_FIREBASE_PROJECT_ID=python-controller-f0c11
-// REACT_APP_FIREBASE_STORAGE_BUCKET=python-controller-f0c11.appspot.com
-// REACT_APP_FIREBASE_MESSAGING_SENDER_ID=1067532213767
-// REACT_APP_FIREBASE_APP_ID=1:1067532213767:web:ca48070ad0f9fa203554a2
-// REACT_APP_FIREBASE_MEASUREMENT_ID=G-GT7CEZFR2B
