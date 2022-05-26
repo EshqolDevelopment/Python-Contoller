@@ -15,6 +15,7 @@
     "crypto-js": "^4.1.1",
     "firebase": "^9.8.1",
     "html-webpack-tags-plugin": "^3.0.2",
+    "is-mobile": "^3.1.1",
     "js-base64": "^3.7.2",
     "js-sha256": "^0.9.0",
     "modern-react-qr-reader": "^1.0.12",

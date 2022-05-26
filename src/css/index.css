@@ -195,3 +195,23 @@ code {
     }
 
 }
+
+
+@media (max-height: 500px){
+
+    .content {
+        width: 92%;
+        height: 97%;
+        top: 77%;
+    }
+
+    .codes-div{
+        position: absolute;
+        top: 110%;
+
+    }
+
+
+
+
+}

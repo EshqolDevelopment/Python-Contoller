@@ -7,7 +7,7 @@
     height: 7.5vh;
     width: 100vw;
     background: white;
-    z-index: 1;
+    z-index: 10000;
 }
 
 .title1 {
@@ -52,6 +52,12 @@
 .true {
     border-bottom: 3px solid #21313c;
 }
+
+
+
+
+
+
 
 
 @media (max-width: 900px) {
