@@ -1,0 +1,91 @@
+
+.about {
+    height: 100vh;
+}
+
+.about * {
+    color: white;
+}
+
+.title2 {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 10.5vh;
+    font-size: 29px;
+}
+
+.description {
+    font-weight: normal;
+    position: absolute;
+    color: white;
+    width: 70%;
+    left: 20%;
+    top: 22%;
+    line-height: 1.2em;
+    font-size: 1.3rem;
+    white-space: pre-wrap;
+}
+
+.link {
+    color: wheat;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.install1 {
+    position: absolute;
+    left: 5%;
+    bottom: 5%;
+    width:10vw;
+}
+
+#d {
+    position: absolute;
+    right: 5%;
+    bottom: 5%;
+    width: 12vw;
+    height: 6vh;
+}
+
+.des {
+    font-size: 1.17rem;
+    line-height: 0;
+}
+
+
+@media (max-width: 900px) {
+
+    .title2 {
+        width: 90%;
+        left: 5%;
+        top: 10vh;
+        font-size: 21px;
+        user-select: none;
+    }
+
+    .description {
+        width: 94%;
+        left: 3%;
+        top: 18vh;
+        line-height: 1.3em;
+        font-size: 1.15rem;
+        user-select: none;
+    }
+
+    .link {
+        color: wheat;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+
+    #d, .install1 {
+        display: none;
+    }
+
+    .des {
+        font-size: 1rem;
+    }
+
+}

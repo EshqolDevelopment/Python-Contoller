@@ -3,8 +3,9 @@
     position: absolute;
     width: 100%;
     text-align: center;
-    top: 7%;
+    top: 10%;
     color: black;
+    font-size: 28px;
 }
 
 .content {
@@ -12,12 +13,12 @@
     border-radius: 1em;
     box-shadow: 0 0 .25em rgba(0,0,0,.4);
     box-sizing: border-box;
-    position: absolute;
-    width: 52%;
-    height: 55%;
+    position: fixed;
+    width: 52vw;
+    height: 55vh;
     text-align: center;
-    left: 50%;
-    top: 50%;
+    left: 50vw;
+    top: 50vh;
     transform: translate(-50%, -50%);
 }
 
@@ -93,16 +94,18 @@ code {
 .codes-div{
     display: flex;
     background: #5a667f;
-    width: 45vw;
     height: 5vh;
     position: absolute;
-    left: 27.5vw;
     justify-content: flex-start;
     align-items: center;
-    border-radius: 30px;
-    top: 78%;
+    border-radius: 15px;
+    top: 80%;
     overflow: auto;
     padding: 10px;
+    width: 50vw;
+    text-align: center;
+    left: 50.1vw;
+    transform: translate(-50%);
 }
 
 .one-code{
@@ -116,10 +119,11 @@ code {
 }
 
 
+
 @media (max-width: 900px) {
 
     .title{
-        top: 6%;
+        top: 9%;
         font-size: 19px;
     }
 
@@ -166,6 +170,7 @@ code {
         top: 78%;
         padding: 10px 0;
         border-radius: 15px;
+        transform: none;
     }
 
     .one-code{

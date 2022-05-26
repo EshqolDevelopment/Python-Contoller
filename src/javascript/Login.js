@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { QrReader } from 'react-qr-reader';
 import qr from '../images/qr.png';
 import { toast, ToastContainer } from 'react-toastify';
@@ -6,10 +6,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import { db, get, ref } from "./firebase";
 import { sha256 } from "js-sha256";
 import addIcon from '../images/add_icon.png'
-import {getElement} from "bootstrap/js/src/util";
+import Topbar from "./topbar";
 
 
 const results = []
+
 
 
 export default function Login() {
@@ -25,6 +26,10 @@ export default function Login() {
     const [remove, setRemove] = useState("")
     const [mapName, setMapName] = useState((localStorage.getItem("names") || "").split("*"))
 
+
+    window.addEventListener('resize', function() {
+        document.querySelector("meta[name=viewport]").setAttribute("content", "height=" + window.screen.height * 0.9 + "px, width=device-width, initial-scale=1.0")
+    })
 
     useEffect(() => {
         if (!results.includes(data)){
@@ -196,9 +201,13 @@ export default function Login() {
 
     }
 
+    document.body.style.overflow = "hidden"
+
 
     return (
         <div className="App">
+
+            <Topbar page={'Connect'}/>
 
             <div className={'background-and-title'}>
                 <h1 className={"title"}>Send python commands to your computer from anywhere around the globe</h1>
@@ -246,4 +255,3 @@ export default function Login() {
         </div>
     );
 }
-

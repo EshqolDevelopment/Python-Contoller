@@ -4,6 +4,7 @@ import {BrowserRouter, Route, Switch} from "react-router-dom";
 import Home from "./javascript/Home";
 import Login from "./javascript/Login";
 import Docs from "./javascript/Docs";
+import About from "./javascript/About";
 import './css/index.css';
 
 
@@ -14,17 +15,17 @@ root.render(
       <BrowserRouter>
           <div className={"parent"}>
               <Switch>
-                  <Route path={"/home"}>
+                  <Route path={"/controller"}>
                       <Home/>
                   </Route>
                   <Route path={"/connect"}>
                       <Login/>
                   </Route>
-                  <Route path={"/docs"}>
+                  <Route path={"/documentation"}>
                       <Docs/>
                   </Route>
                   <Route path={"/"}>
-                      <Home/>
+                      <About/>
                   </Route>
               </Switch>
           </div>

@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getSha, encrypt, decrypt, rnd, base64ToArrayBuffer } from './encryption'
 import { db, write, ref, onValue } from './firebase'
+import Topbar from './topbar'
 import AceEditor from "react-ace";
 import '../css/background.css';
 import '../css/buttons.css';
@@ -32,7 +33,7 @@ export default function Home() {
 
     const n123 = names
     if (n123 === null)
-        goConnect()
+        window.location.replace(window.location.origin + "/connect")
 
     for (let nm of n123.split("*")) {
         const [code, name] = nm.split("@")
@@ -118,8 +119,6 @@ export default function Home() {
     }, [sha])
 
 
-
-
     function setDefault() {
         const val = localStorage.getItem("python")
         if (val)
@@ -127,10 +126,10 @@ export default function Home() {
         else setValue("\nprint('Hello World!')")
 
         localStorage.setItem("isRunning", "true")
-        if (codes == null){
-            window.location = window.location.origin + "/connect";
-        }
-        else{
+        if (codes == null)
+            window.location.href = window.location.origin + "/connect";
+
+        else {
             const temp = []
             for (let c of codes.split("@")){
 
@@ -148,26 +147,23 @@ export default function Home() {
 
 
     function timer() {
-        const clear = setInterval(() => {
+        return () => clearInterval(
+                setInterval(() => {
 
-            if (currentCode !== undefined) {
-                const val = 'print("--checking if running")\nis_running() '
-                const encryptedText = encrypt(val, currentCode)
-                c = false
-                write(sha, encryptedText)
+                if (currentCode !== undefined) {
+                    const val = 'print("--checking if running")\nis_running() '
+                    const encryptedText = encrypt(val, currentCode)
+                    c = false
+                    write(sha, encryptedText)
 
-                setTimeout(() => {
-                    if (!c) setConnected(<h2 style={{color: 'orangered'}} className={'connected'}>Disconnected</h2>)
-                }, 5000)
-            }
-        }, 6000)
-        return () => clearInterval(clear)
+                    setTimeout(() => {
+                        if (!c) setConnected(<h2 style={{color: 'orangered'}} className={'connected'}>Disconnected</h2>)
+                    }, 5000)
+                }
+            }, 6000)
+        )
     }
 
-
-    function goConnect() {
-        window.location = window.location.origin + "/connect";
-    }
 
     function readOutput() {
         const out = ref(db, "Root/" + sha + "-output")
@@ -219,29 +215,18 @@ export default function Home() {
     }
 
 
-
     function onSelectCode(e){
         const cde = e.target.value
-        // bool = 2
         localStorage.setItem("default_comp", cde)
         setCurrentCode(cde)
         shaCode(cde)
     }
 
+
     useEffect(() => {
         setCurrentCode(localStorage.getItem("default_comp"))
         shaCode(localStorage.getItem("default_comp"))
-    }, [shaCode])
-
-
-
-
-    function getItem(key, def) {
-        const curr  = (localStorage.getItem(key) || def)
-        if (curr !== currentCode)
-            setCurrentCode(curr)
-        return curr
-    }
+    }, [])
 
 
     function getItem1(key, def) {
@@ -249,94 +234,93 @@ export default function Home() {
         return curr || def
     }
 
+    document.body.style.overflow = "hidden"
 
     return (
         <div className={"App"}>
 
-                <h1 className={"title1"}>Python Controller - Fast and Secure</h1>
+            <Topbar page={'Controller'}/>
 
-                <div className="area" style={{backgroundColor: back}}>
-                    <ul className="circles">
-                        {[...Array(10).keys()].map((i) => <li key={i}/>)}
-                    </ul>
-                </div>
+            <div className="area" style={{backgroundColor: back}}>
+                <ul className="circles">
+                    {[...Array(10).keys()].map((i) => <li key={i}/>)}
+                </ul>
+            </div>
 
-                <button className={'button-28'} id={"go-connect"} onClick={goConnect}>Connect Page</button>
-
-                <div className={'all'}>
-                    <div className={'right'}>
-                        <div className={"send"}>
-                            <button className="button-3" id={"send-btn"} onClick={send}>Send commands</button>
-                        </div>
-
-                        <h4 className={"output"}>Output: <br/><br/>{output}</h4>
-
-                        <select className="codes-list" onChange={onSelectCode} >
-                            <option>Select Computer</option>
-                            {htmlSelect}
-                        </select>
-
-                        {connected}
+            <div className={'all'}>
+                <div className={'right'}>
+                    <div className={"send"}>
+                        <button className="button-3" id={"send-btn"} onClick={send}>Send commands</button>
                     </div>
 
-                    <div className={'center'}>
-                        <div className={'editor'}>
-                            <AceEditor
-                                placeholder="Write here any script to send your computer"
-                                mode="python"
-                                theme={theme}
-                                className={'editor-box'}
-                                onChange={(x) => {
-                                    localStorage.setItem("python", x)
-                                    setValue(x)
-                                }}
-                                fontSize={17}
-                                showPrintMargin={true}
-                                showGutter={true}
-                                highlightActiveLine={true}
-                                value={value}
-                                setOptions={{
-                                    enableBasicAutocompletion: true,
-                                    enableLiveAutocompletion: true,
-                                    enableSnippets: false,
-                                    showLineNumbers: true,
-                                    tabSize: 2,
-                                }}
-                                style={{height: '100%', width: '100%'}}/>
+                    <h4 className={"output"}>Output: <br/><br/>{output}</h4>
 
-                            <div className={"themes"}>
-                                <label className="select" htmlFor="slct">
-                                    <select defaultValue={getItem1('theme', "xcode")} onChange={changeTheme} id="slct" required="required">
-                                        <option value disabled="disabled" >Select option</option>
-                                        {themes_names.map((s) => <option key={s} value={s}>{s}</option>)}
-                                    </select>
-                                    <svg>
-                                        <use xlinkHref="#select-arrow-down" />
-                                    </svg>
-                                </label>
-                                <svg className="sprites">
-                                    <symbol id="select-arrow-down" viewBox="0 0 10 6">
-                                        <polyline points="1 1 5 5 9 1" />
-                                    </symbol>
+                    <select className="codes-list" onChange={onSelectCode} >
+                        <option>Select Computer</option>
+                        {htmlSelect}
+                    </select>
+
+                    {connected}
+                </div>
+
+                <div className={'center'}>
+                    <div className={'editor'}>
+                        <AceEditor
+                            placeholder="Write here any script to send your computer"
+                            mode="python"
+                            theme={theme}
+                            className={'editor-box'}
+                            onChange={(x) => {
+                                localStorage.setItem("python", x)
+                                setValue(x)
+                            }}
+                            fontSize={17}
+                            showPrintMargin={true}
+                            showGutter={true}
+                            highlightActiveLine={true}
+                            value={value}
+                            setOptions={{
+                                enableBasicAutocompletion: true,
+                                enableLiveAutocompletion: true,
+                                enableSnippets: false,
+                                showLineNumbers: true,
+                                tabSize: 2,
+                            }}
+                            style={{height: '100%', width: '100%'}}/>
+
+                        <div className={"themes"}>
+                            <label className="select" htmlFor="slct">
+                                <select defaultValue={getItem1('theme', "xcode")} onChange={changeTheme} id="slct" required="required">
+                                    <option value disabled="disabled" >Select option</option>
+                                    {themes_names.map((s) => <option key={s} value={s}>{s}</option>)}
+                                </select>
+                                <svg>
+                                    <use xlinkHref="#select-arrow-down" />
                                 </svg>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className={'left'}>
-                        <h3 className={"description"}>Welcome to python controller! the tool that enables you to send python
-                            commands and scripts to your private computer, from anywhere around the globe. for installing the
-                            computer app use the button bellow for installing in microsoft store</h3>
-
-                        <div className={'images'}>
-                            <img src={"https://getbadgecdn.azureedge.net/images/English_L.png"}
-                                 alt={"Get From microsoft store"} className={"install"}/>
-
-                            <button className={"button-3"} id={"docs-button"} onClick={() =>
-                                window.location.replace(window.location.origin + "/docs")}>See Documentation</button>
+                            </label>
+                            <svg className="sprites">
+                                <symbol id="select-arrow-down" viewBox="0 0 10 6">
+                                    <polyline points="1 1 5 5 9 1" />
+                                </symbol>
+                            </svg>
                         </div>
                     </div>
                 </div>
+
+                <div className={'left'}>
+                    <h3 className={"description"}>Welcome to python controller! the tool that enables you to send python
+                        commands and scripts to your private computer, from anywhere around the globe. for installing the
+                        computer app use the button bellow for installing in microsoft store</h3>
+
+                    <div className={'images'}>
+                        <img src={"https://getbadgecdn.azureedge.net/images/English_L.png"}
+                             alt={"Get From microsoft store"} className={"install"}/>
+
+                        <button className={"button-3"} id={"docs-button"} onClick={() =>
+                            window.location.replace(window.location.origin + "/docs")}>See Documentation</button>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

@@ -1,25 +1,36 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import '../css/Docs.css'
-
+import Topbar from "./topbar";
 
 
 export default function Docs() {
-    return (
-        <div className="App1">
 
-                <h3 id={'title'}>Python Controller Built in functions</h3>
+    document.body.style.overflow = "visible"
+
+    useEffect(() => console.log(1))
+
+    return (
+
+        <div className={'css-selector'}>
+            <Topbar page={'Documentation'}/>
+
+            <div className="App1">
+
+                <h3 className={'title3'}>Python Controller Built in functions</h3>
 
                 <div id={'box'}>
                     <div className={'inner'}>
-                        <h5 className={'func'}>download_file(path)</h5>
+                        <h5 className={'func'}>download(path)</h5>
                         <h5 className={'desc'}>Simply call this function with the path of your file, don't forget to add 'r'
                             before the absolute path!<br/>
                             Example: download_file(r'C:\Users\user\Desktop\my_image.png')</h5>
                     </div>
 
                     <div className={'inner'}>
-                        <h5 className={'func'}>screenshot()</h5>
-                        <h5 className={'desc'}>Call this function to download a screenshot of your computer.<br/>
+                        <h5 className={'func'}>screenshot(x1=0, y1=0, x2=1920, y2=1080)</h5>
+                        <h5 className={'desc'}>Call this function to download a screenshot of your computer, you can either
+                            call this function with no arguments for full screenshot, or use x1, y1, x2, y2
+                            to cut and get screenshot of a specific area.<br/>
                             Example: screenshot(0, 0, 1920, 1080)</h5>
                     </div>
 
@@ -47,9 +58,30 @@ export default function Docs() {
                     <div className={'inner'}>
                         <h5 className={'func'}>is_running()</h5>
                         <h5 className={'desc'}>Check if Python Controller is running on your computer, this function will
-                            return True if it does. after about 5 seconds without a response, we will update the state to
-                            False for you<br/>
+                            return True if it does. after about 5 seconds without a response, you can consider this at all.<br/>
+                            We automatically calling this function every 4 seconds and updating the state for you.<br/>
                             Example: is_running()</h5>
+                    </div>
+
+                    <div className={'inner'}>
+                        <h5 className={'func'}>user()</h5>
+                        <h5 className={'desc'}>Returns the path of the current user.<br/>
+                            Example: user() -> 'C:/Users/my_user'</h5>
+                    </div>
+
+                    <div className={'inner'}>
+                        <h5 className={'func'}>listdir(path, filter=lambda x: True)</h5>
+                        <h5 className={'desc'}>List all the files and directories inside of a specific folder,
+                            you can filter the results by adding lambda function such as:
+                            filter=lambda x: x.endswith(".txt")<br/>
+                            This will filter files that doesn't have .txt extension<br/>
+                            Example: listdir("C:/My folder')</h5>
+                    </div>
+
+                    <div className={'inner'}>
+                        <h5 className={'func'}>press(key)</h5>
+                        <h5 className={'desc'}>Press a key on your keyboard<br/>
+                            Example: press('space'), press('a')</h5>
                     </div>
 
                     <div className={'inner'}>
@@ -58,9 +90,7 @@ export default function Docs() {
                             cryptography, pycrypto, eshqol, qrcode</h5>
                     </div>
                 </div>
-
-                <button onClick={() => window.location.replace(window.location.origin + '/home')} className={'button-28'} id={"go-back"}>Go Back</button>
+            </div>
         </div>
-
     );
 }

@@ -8,7 +8,7 @@ body {
 
 .right, .center, .left {
     position: absolute;
-    height: 88vh;
+    height: 92vh;
     bottom: 0;
 }
 
@@ -91,14 +91,6 @@ body {
     user-select: none;
 }
 
-.description {
-    position: absolute;
-    color: white;
-    width: 86%;
-    left: 7%;
-    top: 8%;
-}
-
 .install {
     position: absolute;
     left: 37%;
@@ -107,14 +99,6 @@ body {
     cursor: pointer;
 }
 
-.title1 {
-    position: absolute;
-    top: 4%;
-    color: white;
-    width: 100%;
-    text-align: center;
-    z-index: 99;
-}
 
 .content1 {
     position: absolute;
